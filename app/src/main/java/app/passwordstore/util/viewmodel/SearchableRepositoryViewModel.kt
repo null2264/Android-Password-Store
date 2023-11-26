@@ -56,7 +56,7 @@ import me.zhanghai.android.fastscroll.PopupTextProvider
 
 private fun File.toPasswordItem() =
   if (isFile) PasswordItem.newPassword(name, this, PasswordRepository.getRepositoryDirectory())
-  else PasswordItem.newCategory(name, this, PasswordRepository.getRepositoryDirectory())
+  else PasswordItem.newCategory(this, PasswordRepository.getRepositoryDirectory())
 
 private fun PasswordItem.fuzzyMatch(filter: String): Int {
   val (_, score) = Fuzzy.fuzzyMatch(filter, longName)
