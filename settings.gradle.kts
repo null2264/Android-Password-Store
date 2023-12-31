@@ -99,6 +99,8 @@ include("passgen:diceware")
 
 include("passgen:random")
 
+include("passkeys")
+
 include("sentry-stub")
 
 include("ui:compose")
