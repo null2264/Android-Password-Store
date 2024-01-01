@@ -19,6 +19,7 @@ object PreferenceKeys {
   const val CLEAR_CLIPBOARD_HISTORY = "clear_clipboard_history"
   const val CLEAR_SAVED_PASS = "clear_saved_pass"
   const val COPY_ON_DECRYPT = "copy_on_decrypt"
+  const val DISABLE_BATTERY_OPTIMIZATION = "disable_battery_optimization"
   const val ENABLE_DEBUG_LOGGING = "enable_debug_logging"
   const val EXPORT_PASSWORDS = "export_passwords"
   const val FILTER_RECURSIVELY = "filter_recursively"

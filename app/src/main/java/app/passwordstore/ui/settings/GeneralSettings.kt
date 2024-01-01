@@ -5,9 +5,17 @@
 
 package app.passwordstore.ui.settings
 
+import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.pm.ShortcutManager
+import android.os.PowerManager
+import android.provider.Settings
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import app.passwordstore.R
 import app.passwordstore.util.auth.BiometricAuthenticator
@@ -16,6 +24,7 @@ import app.passwordstore.util.extensions.sharedPrefs
 import app.passwordstore.util.settings.PreferenceKeys
 import de.Maxr1998.modernpreferences.PreferenceScreen
 import de.Maxr1998.modernpreferences.helpers.onClick
+import de.Maxr1998.modernpreferences.helpers.pref
 import de.Maxr1998.modernpreferences.helpers.singleChoice
 import de.Maxr1998.modernpreferences.helpers.switch
 import de.Maxr1998.modernpreferences.preferences.choice.SelectionItem
@@ -101,6 +110,32 @@ class GeneralSettings(private val activity: FragmentActivity) : SettingsProvider
             removeDynamicShortcuts(dynamicShortcuts.map { it.id }.toMutableList())
           }
           false
+        }
+      }
+
+      pref(PreferenceKeys.DISABLE_BATTERY_OPTIMIZATION) {
+        titleRes = R.string.pref_disable_battery_optimization_title
+        onClick {
+          val powerManager: PowerManager? = ContextCompat.getSystemService(activity.applicationContext, PowerManager::class.java)
+          val packageName: String = activity.applicationContext.packageName
+          if (powerManager != null) {
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+              try {
+                @SuppressLint("BatteryLife")
+                val intent = Intent().apply {
+                  action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                  data = "package:$packageName".toUri()
+                  addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                activity.startActivity(intent)
+              } catch (e: ActivityNotFoundException) {
+                Toast.makeText(activity, "Battery optimization settings not found", Toast.LENGTH_SHORT).show()
+              }
+            } else {
+              Toast.makeText(activity, "Battery optimization already disabled", Toast.LENGTH_SHORT).show()
+            }
+          }
+          true
         }
       }
     }
